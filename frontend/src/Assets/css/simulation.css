@@ -1,0 +1,244 @@
+Global Styles
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+  
+.simulation-page-top-container {
+    font-family: Arial, sans-serif;
+    background-color: #f4f4f4;
+    height: 100vh;
+    background-image: url('https://i.pinimg.com/originals/ae/7c/d0/ae7cd05d9438e3a42f955718affa1c9b.gif');
+    background-repeat: none;
+}
+
+.navbar_simulation {
+    display: flex;
+    justify-content: space-between;
+    align-items: center;
+    padding: 15px 20px;
+}
+
+.navbar_simulation .logo {
+    color: white;
+    font-size: 24px;
+    font-weight: bold;
+}
+
+.navbar_simulation .nav-links {
+    list-style-type: none;
+    display: flex;
+}
+
+.navbar_simulation .nav-links li {
+    margin-left: 20px;
+}
+
+.navbar_simulation .nav-links li a {
+    color: white;
+    text-decoration: none;
+    font-size: 18px;
+}
+
+.navbar_simulation .nav-links li a:hover {
+    text-decoration: underline;
+}
+
+.container {
+    /* border: 1px solid red; */
+    width: 90%;
+    height:80vh;  
+    margin: 0 auto; 
+    margin-top:1rem;
+    box-shadow: 0 0 20px rgba(0, 0, 0, 0.1);
+}
+.protocol-div{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    height:10%;
+    width: 100%;
+}
+.select-protocol{
+    border:1px solid rgb(230, 233, 243);
+    border-radius:3px;
+    font-size:18px;
+    font-family:sans-serif;
+    font-weight: 600;
+    width:30%;
+    height:80%;
+    cursor: pointer;
+}
+.simulation-main-block{
+    display: flex;
+    align-items: center;
+    justify-content: space-between;
+    width:100%;
+    height:90%;
+    /* border: 1px solid red; */
+}
+.computer {
+    background-color: #f0f6fe;
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    width: 30%; 
+    height:100%;
+    align-items: center;
+    justify-content:space-between;
+    border-radius:2px;
+}
+.machine-title{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    width: 100%;
+    height:10%;
+    /* background-color: #dddddd; */
+    background-color: #d7dee9;
+}
+.machine-title h3{
+    font-family: sans-serif;
+} 
+.machine-details-block{
+    width: 100%;
+    height:10%;
+    /* border: 1px solid black; */
+}
+.server-img-block{
+    width:100%;
+    height:60%;
+    background-image: url('../images/monitor-server.webp');
+    background-size: 100% 100%;
+    background-repeat: none;
+    box-shadow:0px 0px 2px #333;
+}
+.request-btn-block{
+    width:100%;
+    height:20%;
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:rgba(0, 0, 0, 0.1);
+}
+.send-button{
+    height:40%;
+    width:30%;
+    background-color: #28a745; 
+    color: white;
+    border: none;
+    border-radius: 5px;
+    cursor: pointer;
+    transition: background-color 0.3s; 
+}
+
+.send-button:hover {
+    background-color: #218838; 
+}
+
+.machine-img-block{
+    width:80%;
+    height:60%;
+    background-image: url('../images/monitor.png');
+    background-size: 100% 100%;
+    background-repeat: none;
+    box-shadow:0px 0px 2px #333;
+}
+
+.firewall {
+    width:30%;
+    height:80%;
+    border: 1px solid #f6f4f4;
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    background-color:whitesmoke;
+  }
+  .firewall h3{
+    background-color: #e2e3eb;
+    text-align: center;
+  }
+  .curr-state-div{
+    padding:0.5rem;
+    font-size:16px;
+    font-family: sans-serif;
+  }
+
+.checkpoint-list{
+    width:90%;
+    height:auto;
+    /* border: 1px solid #ff1d1d; */
+    position: relative;
+    display: flex;
+    flex-direction: column;
+    font-size:14px;
+    font-weight: bold;
+    font-family: Arial, Helvetica, sans-serif;
+}
+.checkpoint-table {
+    width: 100%;
+    border-collapse: collapse;
+    margin-top: 10px; /* Optional spacing */
+  }
+  
+  .checkpoint-table-header {
+    background-color: #f2f2f2; /* Light gray background */
+    padding: 10px;
+    text-align: left;
+  }
+  
+  .checkpoint-table-row {
+    border-bottom: 1px solid #ddd; /* Bottom border for rows */
+  }
+  
+  .checkpoint-table-cell {
+    padding: 10px; /* Spacing for cells */
+  }
+  
+
+.data-packet {
+    position: absolute;
+    top: 51%; 
+    left: 22.5%; 
+    transform: translate(-50%, -50%); 
+    background-color: #007bff;
+    color: white;
+    padding: 10px 20px;
+    border-radius: 5px;
+    margin: 10px 0;
+    font-weight: bold;
+    transition: transform 1s ease, opacity 1s ease;
+}
+
+
+
+.success-message {
+    font-size:22px;
+    text-align: center;
+    color: green;
+    font-weight: bold;
+    padding:1rem 0px;
+  }
+  
+  .failure-message {
+    font-size:22px;
+    text-align: center;
+    color: red;
+    font-weight: bold;
+    padding:1rem 0px;
+  }
+
+footer {
+    background-color: #333;
+    color: white;
+    text-align: center;
+    padding: 10px 0;
+    position: absolute;
+    bottom: 0;
+    width: 100%;
+}
+
+
+  
+  
