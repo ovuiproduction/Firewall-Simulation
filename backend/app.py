@@ -161,6 +161,8 @@ def applyFirewall():
    
     firewall_check_result = main(packet)  # could return "accepted" or "rejected"
 
+    print(firewall_check_result)
+    
     # Prepare the response object with checkpoint details
     response = {
         "srcMac": srcMachineData["MAC"],

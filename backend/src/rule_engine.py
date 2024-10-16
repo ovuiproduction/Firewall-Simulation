@@ -7,7 +7,7 @@ class rule_engine():
         self.out_config = configparser.ConfigParser()
         self.in_config.read('src/inbound rules.ini')
         self.out_config.read('src/outbound rules.ini')
-
+ 
     # function for checking inbound rules
     def checkInboundRules(self, ip_address, port):
 
@@ -24,7 +24,7 @@ class rule_engine():
             if(i == ip_address and port in self.in_config['Rejecting ip'][i].split(",")):
                 return "Reject"
 
-        return "No rule associated!!!! Please assign a rule"
+        return "Reject"
 
 
     # function for checking outbounds rules
@@ -42,4 +42,4 @@ class rule_engine():
             if(i == ip_address and (port in self.out_config['Rejecting ip'][i].split(","))):
                 return "Reject"
 
-        return "No rule associated!!!! Please assign a rule"
+        return "Reject"

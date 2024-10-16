@@ -11,12 +11,12 @@ def main(f):
     s = s.split("|")
     
     # Destination MAC Address
-    DesMacaddress = s[0]+":"+s[1]+":"+s[2]+":"+s[3]+":"+s[4]+":"+s[5]
-    print("Destination MacAddress : ",DesMacaddress)
+    SrcMacaddress = s[0]+":"+s[1]+":"+s[2]+":"+s[3]+":"+s[4]+":"+s[5]
+    print("Source MacAddress : ",SrcMacaddress)
     
     # Source MAC Address
-    MACaddress =s[6]+":"+s[7]+":"+s[8]+":"+s[9]+":"+s[10]+":"+s[11] 
-    print("Source MacAddress : ",MACaddress)
+    DesMacaddress =s[6]+":"+s[7]+":"+s[8]+":"+s[9]+":"+s[10]+":"+s[11] 
+    print("Destination MacAddress : ",DesMacaddress)
     
     #### IP HEADER
     # checking for Protocol used 
@@ -35,67 +35,33 @@ def main(f):
     # 36-37 => Destination Port
     
     if(s[23]== "06"):
-        packet = tcp_packet(MACaddress,\
+        packet = tcp_packet(
                         getIpAddress(s[26:30]), \
                         getIpAddress(s[30:34]),\
                         getPort(s[34:36]), \
                         getPort(s[36:38]) )
     elif(s[23]== "11"):
-        packet = udp_packet(MACaddress,\
+        packet = udp_packet(
                         getIpAddress(s[26:30]), \
                         getIpAddress(s[30:34]),\
                         getPort(s[34:36]), \
                         getPort(s[36:38]) )
-    print(packet.String())
-    # f.readline()
-
+        
     # r is the rule engine variable
     r = rule_engine()
     
     # variable for acknowledgement of successfully transmisson / receiving of packets
-    isSuccess = False
+    result = ""
     # Checking if Source MAC Address is of my Device then Packet is transporting
-    if(isSrc(['F0','77','C3','F0','D9','17'],s[6:12])):
+    if(isSrc(['F0','77','C3','F0','D9','17'],s[0:6])):
         print("packet going out of our server..")
-        
-        # Source Information Printing
-        print("source ip:{} and port:{} will {}".
-                format(packet.getSrcIP(),\
-                packet.getSrcPort(),\
-                r.checkOutboundRules(packet.getSrcIP(), packet.getSrcPort())))
-        
-        # Destination Information Printing
-        print("Destination ip:{} and port:{} will {}".
-                format(packet.getDstIP(),\
-                packet.getDstPort(),\
-                r.checkOutboundRules(packet.getDstIP(), packet.getDstPort())))
-
         # As packet is tranporting from my device we check the outbound rules
-        isSuccess = r.checkOutboundRules(packet.getSrcIP(), packet.getSrcPort()) == 'Accept' and \
-                    r.checkOutboundRules(packet.getDstIP(), packet.getDstPort()) == 'Accept'
+        result = r.checkOutboundRules(packet.getDstIP(), packet.getDstPort())
 
     # if the Source MAC is notmatched with my device MAC that means receiving the packet
     else:
         print("packet comes to our server..")
-        # Source info
-        print("source ip:{} and port:{} will {}".
-                format(packet.getSrcIP(),\
-                packet.getSrcPort(),\
-                r.checkInboundRules(packet.getSrcIP(), packet.getSrcPort())))
-        # Destination info
-        print("Destination ip:{} and port:{} will {}".
-                format(packet.getDstIP(),\
-                packet.getDstPort(),\
-                r.checkInboundRules(packet.getDstIP(), packet.getDstPort())))
-        
         # As packet is receiving by our device we check for inbound rules
-        isSuccess = r.checkInboundRules(packet.getSrcIP(), packet.getSrcPort()) == 'Accept' and \
-                    r.checkInboundRules(packet.getDstIP(), packet.getDstPort()) == 'Accept'
+        result = r.checkInboundRules(packet.getSrcIP(), packet.getSrcPort())
 
-
-    if(isSuccess):
-        print("Packet transmission successfull")
-        return "accepted"
-    else:
-        print("Packet transmission unsuccessfull!!! Packet Dropped")
-        return "rejected"
+    return result

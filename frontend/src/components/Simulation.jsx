@@ -13,6 +13,8 @@ export default function Simulation() {
   const [checkpointDetails, setCheckpointDetails] = useState([]);
   const [firewallProcessing, setFirewallProcessing] = useState("Ideal");
   const [packetAccepted, setPacketAccepted] = useState(false);
+  const [packetReject, setPacketReject] = useState(false);
+  const [packetDecline, setPacketDecline] = useState(false);
 
   let selectedMachineId = sessionStorage.getItem("selectedMachine");
   let myMachineId = "my-machine";
@@ -99,9 +101,11 @@ export default function Simulation() {
         // All checkpoints processed, show result
         setTimeout(() => {
           setFirewallProcessing("completed");
-          setPacketAccepted(status === "accepted");
+          setPacketAccepted(status === "Accept");
+          setPacketDecline(status === "Decline");
+          setPacketReject(status === "Reject");
 
-          if (status === "accepted") {
+          if (status === "Accept") {
             // Move packet to Computer B
             setPacketStyle({
               transform: "translate(840px, -10px)", // Move to Computer B
@@ -112,6 +116,58 @@ export default function Simulation() {
       }
     };
     processNext();
+  };
+
+
+  const handleGetRequest = () => {
+    // Show the data packet immediately and reset its position
+    setDataPacketVisible(true);
+    setPacketStyle({
+      transform: "translate(0px, -30px)", // Reset to initial position
+      transition: "none", // Remove transition for immediate effect
+    });
+
+    // Start moving the packet to the firewall
+    setTimeout(() => {
+      setPacketStyle({
+        transform: "translate(300px,0)", // Move to firewall position
+        transition: "transform 5s",
+      });
+      // Simulate delay for the packet to reach the firewall
+      setTimeout(() => {
+        axios
+          .post("http://127.0.0.1:5000/apply", {
+            srcId: myMachineId,
+            desId: selectedMachineId,
+            protocol: protocol,
+          })
+          .then((response) => {
+            // Show firewall processing animation
+            setFirewallProcessing("working");
+
+            // Get checkpoint details from response and process them one by one
+            const checkpoints = [
+              { name: "Source MAC", value: response.data.srcMac || "N/A" },
+              { name: "Source MAC", value: response.data.srcMac || "N/A" },
+              {
+                name: "Destination MAC",
+                value: response.data.destMac || "N/A",
+              },
+              { name: "Source IP", value: response.data.srcIP || "N/A" },
+              { name: "Destination IP", value: response.data.destIP || "N/A" },
+              { name: "Source Port", value: response.data.srcPort || "N/A" },
+              {
+                name: "Destination Port",
+                value: response.data.destPort || "N/A",
+              },
+            ];
+            processCheckpoints(checkpoints, response.data.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 2000);
+    }, 0);
   };
 
   return (
@@ -220,7 +276,9 @@ export default function Simulation() {
                     packetAccepted ? "success-message" : "failure-message"
                   }
                 >
-                  {packetAccepted ? "Packet Accepted" : "Packet Rejected"}
+                  {packetAccepted && "Packet Accepted"}
+                  {packetDecline && "Packet Decline"}
+                  {packetReject && "Packet Rejected"}
                 </div>
               )}
             </div>
@@ -233,7 +291,7 @@ export default function Simulation() {
               <div className="machine-details-block"></div>
               <div className="machine-img-block"></div>
               <div className="request-btn-block">
-                <button className="send-button" onClick={handleSendRequest}>
+                <button className="send-button" onClick={handleGetRequest}>
                   Send
                 </button>
               </div>
