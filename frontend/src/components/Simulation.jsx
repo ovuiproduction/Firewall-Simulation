@@ -1,20 +1,38 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
 import "../Assets/css/simulation.css";
-import machineLogo from "../Assets/images/monitor.png";
 
 export default function Simulation() {
   const [protocol, setProtocol] = useState("TCP");
   const [packetStyle, setPacketStyle] = useState({
     transform: "translate(0px, 0)",
   });
-  // const [firewallStyle,setFirewallStyle] = useState()
+
+  const [packetStyleB, setPacketStyleB] = useState({
+    transform: "translate(0px, 0)",
+  });
+  
   const [dataPacketVisible, setDataPacketVisible] = useState(false);
+  const [dataPacketVisibleB, setDataPacketVisibleB] = useState(false);
+
   const [checkpointDetails, setCheckpointDetails] = useState([]);
   const [firewallProcessing, setFirewallProcessing] = useState("Ideal");
   const [packetAccepted, setPacketAccepted] = useState(false);
   const [packetReject, setPacketReject] = useState(false);
   const [packetDecline, setPacketDecline] = useState(false);
+
+  // set default
+  const setToDefault = ()=>{
+    setPacketStyle({transform: "translate(0px, 0)"});
+    setPacketStyleB({transform: "translate(0px, 0)"});
+    setDataPacketVisible(false);
+    setDataPacketVisibleB(false);
+    setCheckpointDetails([]);
+    setFirewallProcessing("Ideal");
+    setPacketAccepted(false);
+    setPacketReject(false);
+    setPacketDecline(false);
+  }
 
   let selectedMachineId = sessionStorage.getItem("selectedMachine");
   let myMachineId = "my-machine";
@@ -24,59 +42,8 @@ export default function Simulation() {
     setProtocol(event.target.value);
   };
 
-  // Function to handle sending the request
-  const handleSendRequest = () => {
-    // Show the data packet immediately and reset its position
-    setDataPacketVisible(true);
-    setPacketStyle({
-      transform: "translate(0px, -30px)", // Reset to initial position
-      transition: "none", // Remove transition for immediate effect
-    });
 
-    // Start moving the packet to the firewall
-    setTimeout(() => {
-      setPacketStyle({
-        transform: "translate(300px,0)", // Move to firewall position
-        transition: "transform 5s",
-      });
-      // Simulate delay for the packet to reach the firewall
-      setTimeout(() => {
-        axios
-          .post("http://127.0.0.1:5000/apply", {
-            srcId: myMachineId,
-            desId: selectedMachineId,
-            protocol: protocol,
-          })
-          .then((response) => {
-            // Show firewall processing animation
-            setFirewallProcessing("working");
-
-            // Get checkpoint details from response and process them one by one
-            const checkpoints = [
-              { name: "Source MAC", value: response.data.srcMac || "N/A" },
-              { name: "Source MAC", value: response.data.srcMac || "N/A" },
-              {
-                name: "Destination MAC",
-                value: response.data.destMac || "N/A",
-              },
-              { name: "Source IP", value: response.data.srcIP || "N/A" },
-              { name: "Destination IP", value: response.data.destIP || "N/A" },
-              { name: "Source Port", value: response.data.srcPort || "N/A" },
-              {
-                name: "Destination Port",
-                value: response.data.destPort || "N/A",
-              },
-            ];
-            processCheckpoints(checkpoints, response.data.status);
-          })
-          .catch((error) => {
-            console.log(error);
-          });
-      }, 2000);
-    }, 0);
-  };
-
-  const processCheckpoints = (checkpoints, status) => {
+  const processCheckpoints = (dest,checkpoints, status) => {
     let currentCheckpoint = 0;
 
     // Clear existing checkpoint details before starting
@@ -107,19 +74,27 @@ export default function Simulation() {
 
           if (status === "Accept") {
             // Move packet to Computer B
-            setPacketStyle({
-              transform: "translate(840px, -10px)", // Move to Computer B
-              transition: "transform 5s",
-            });
+            if(dest>0){
+              setPacketStyle({
+                transform: `translate(${dest}px, -10px)`,
+                transition: "transform 5s",
+              });
+            }else if(dest<0){
+              setPacketStyleB({
+                transform: `translate(${dest}px, -10px)`,
+                transition: "transform 5s",
+              });
+            }
           }
         }, 500);
       }
     };
     processNext();
   };
-
-
-  const handleGetRequest = () => {
+  // Function to handle sending the request
+  const handleSendRequest = () => {
+    setToDefault();
+    setTimeout(() => {}, 2000);
     // Show the data packet immediately and reset its position
     setDataPacketVisible(true);
     setPacketStyle({
@@ -161,13 +136,67 @@ export default function Simulation() {
                 value: response.data.destPort || "N/A",
               },
             ];
-            processCheckpoints(checkpoints, response.data.status);
+            processCheckpoints(840,checkpoints, response.data.status);
           })
           .catch((error) => {
             console.log(error);
           });
       }, 2000);
-    }, 0);
+    }, 100);
+  };
+
+// Function to handle get the request
+  const handleGetRequest = () => {
+    setToDefault();
+    setTimeout(() => {}, 2000);
+    // Show the data packet immediately and reset its position
+    setDataPacketVisibleB(true);
+    setPacketStyleB({
+      transform: "translate(0px, -30px)", // Reset to initial position
+      transition: "none", // Remove transition for immediate effect
+    });
+
+    // Start moving the packet to the firewall
+    setTimeout(() => {
+      setPacketStyleB({
+        transform: "translate(-300px,10px)", // Move to firewall position
+        transition: "transform 5s",
+      });
+      // Simulate delay for the packet to reach the firewall
+      setTimeout(() => {
+        axios
+          .post("http://127.0.0.1:5000/apply", {
+            srcId: selectedMachineId,
+            desId: myMachineId,
+            protocol: protocol,
+          })
+          .then((response) => {
+            // Show firewall processing animation
+            setFirewallProcessing("working");
+
+            // Get checkpoint details from response and process them one by one
+            const checkpoints = [
+              { name: "Source MAC", value: response.data.srcMac || "N/A" },
+              { name: "Source MAC", value: response.data.srcMac || "N/A" },
+              {
+                name: "Destination MAC",
+                value: response.data.destMac || "N/A",
+              },
+              { name: "Source IP", value: response.data.srcIP || "N/A" },
+              { name: "Destination IP", value: response.data.destIP || "N/A" },
+              { name: "Source Port", value: response.data.srcPort || "N/A" },
+              {
+                name: "Destination Port",
+                value: response.data.destPort || "N/A",
+              },
+            ];
+            processCheckpoints(-840,checkpoints, response.data.status);
+          })
+          .catch((error) => {
+            console.log(error);
+          });
+      }, 2000);
+    }, 100);
   };
 
   return (
@@ -193,6 +222,7 @@ export default function Simulation() {
 
         <div className="container">
           <div className="protocol-div">
+            <label className="warning">TCP as the Default Protocol</label>
             <select className="select-protocol" onChange={handleProtocolChange}>
               <option value="">Protocol</option>
               <option value="TCP">TCP</option>
@@ -264,7 +294,7 @@ export default function Simulation() {
                               {checkpoint.value}
                             </td>
                           </tr>
-                        ) : null // Render nothing if checkpoint is undefined
+                        ) : null
                     )}
                   </tbody>
                 </table>
@@ -295,11 +325,20 @@ export default function Simulation() {
                   Send
                 </button>
               </div>
+              {dataPacketVisibleB && (
+                <div
+                  className="data-packet-B"
+                  id="dataPacketB"
+                  style={packetStyleB}
+                >
+                  Data Packet
+                </div>
+              )}
             </div>
           </div>
         </div>
         <footer>
-          &copy; 2024 Data Packet Visualization. All rights reserved.
+          &copy; 2024 Firewall Simulation & Data Packet Analysis.
         </footer>
       </div>
     </>

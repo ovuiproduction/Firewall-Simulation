@@ -9,9 +9,6 @@ class udp_packet():
     def getSrcIP(self):
         return self.srcIP
 
-    def getMACaddress(self):
-        return self.MACaddress
-    
     def getDstIP(self):
         return self.dstIP
 

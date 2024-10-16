@@ -12,12 +12,10 @@ def main(f):
     
     # Destination MAC Address
     SrcMacaddress = s[0]+":"+s[1]+":"+s[2]+":"+s[3]+":"+s[4]+":"+s[5]
-    print("Source MacAddress : ",SrcMacaddress)
-    
+   
     # Source MAC Address
     DesMacaddress =s[6]+":"+s[7]+":"+s[8]+":"+s[9]+":"+s[10]+":"+s[11] 
-    print("Destination MacAddress : ",DesMacaddress)
-    
+   
     #### IP HEADER
     # checking for Protocol used 
     # in the packet hex sequence 
