@@ -3,6 +3,12 @@ from flask_pymongo import PyMongo
 import os
 import sys
 from flask_cors import CORS
+from dotenv import load_dotenv
+
+load_dotenv()
+
+app = Flask(__name__,template_folder="templates")
+CORS(app)
 
 MONGO_URL = os.getenv("MONGO_URL")
 
@@ -12,16 +18,15 @@ sys.path.insert(0, os.path.abspath(os.path.join(os.path.dirname(__file__) + '/sr
 # importing main function from core.py file
 from core import main # type: ignore
 
-app = Flask(__name__,template_folder="templates")
-CORS(app)
-
-app.config["MONGO_URI"] = "mongodb://localhost:27017/machinedb"
+app.config["MONGO_URI"] = MONGO_URL
 mongo = PyMongo(app)
-
 collection = mongo.db.machineInfo
 
-# functions
 
+from config import addRule
+from config import fetchRules
+
+# functions
 def fetchMachineData(machineId):
     data = collection.find_one({'MachineId': machineId}, {'_id': 0})
     return data
@@ -74,7 +79,7 @@ def addTCPHeader(srcPort,desport):
 
 @app.route('/')
 def index():
-    return render_template('index.html',data = {"Server running"})
+    return render_template('index.html',data = "Server running")
 
 # Add machines
 @app.route('/add-machine',methods=['POST'])
@@ -114,34 +119,37 @@ def fetchAll():
     return jsonify(data)
 
 
+@app.route('/<string:direction>-rules',methods=['POST'])
+def get_rules(direction):
+    if direction not in ['inbound', 'outbound']:
+        return jsonify({"error": "Invalid direction or action"}), 400
+    rules = fetchRules(direction)
+    return jsonify(rules)
+
 # configure firewall
-# accept
-@app.route('/config-firewall/add-inbound-rule',methods=['POST'])
-def addInboundRule():
+@app.route('/config-firewall/<string:direction>-<string:action>', methods=['POST'])
+def handleFirewallRule(direction, action):
     data = request.json
     ip = data.get('IP')
     port = data.get('PORT')
 
-# accept
-@app.route('/config-firewall/add-outbound-rule',methods=['POST'])
-def addOutboundRule():
-    data = request.json
-    ip = data.get('IP')
-    port = data.get('PORT')
+    # Validate IP and PORT
+    if not ip or not port:
+        return jsonify({"error": "IP and PORT are required"}), 400
+
+    # Validate direction and action
+    if direction not in ['inbound', 'outbound'] or action not in ['accept', 'reject']:
+        return jsonify({"error": "Invalid direction or action"}), 400
     
-# reject/block
-@app.route('/config-firewall/block-inbound-rule',methods=['POST'])
-def blockInbound():
-    data = request.json
-    ip = data.get('IP')
-    port = data.get('PORT')
+    try:
+        ip_segments = ip.split('|')
+        decimal_ip = '.'.join(str(int(segment, 16)) for segment in ip_segments)
+    except ValueError:
+        return jsonify({"error": "Invalid hex format for IP or PORT"}), 400
 
-# accept
-@app.route('/config-firewall/block-outbound-rule',methods=['POST'])
-def blockOutbound():
-    data = request.json
-    ip = data.get('IP')
-    port = data.get('PORT')
+    result = addRule(decimal_ip,port,direction,action)
+    return jsonify(result)
+
     
 # apply firewall
 @app.route('/apply',methods=['POST'])

@@ -1,6 +1,6 @@
 import React, { useState, useEffect } from "react";
 import axios from "axios";
-import { useNavigate } from "react-router-dom";
+import {Link, useNavigate } from "react-router-dom";
 
 import "../Assets/css/home.css";
 
@@ -70,7 +70,7 @@ export default function Home() {
                     <button onClick={()=>setServerDetails(true)}>Machine Details</button>
                   </li>
                   <li>
-                    <button>Config Firewall</button>
+                    <Link className="config-link" to='/config/firewall'>Config Firewall</Link>
                   </li>
                 </ul>
               </div>

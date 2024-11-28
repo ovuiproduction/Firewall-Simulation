@@ -1,4 +1,5 @@
 import React, { useState, useEffect } from "react";
+import {Link} from "react-router-dom";
 import axios from "axios";
 import "../Assets/css/simulation.css";
 
@@ -206,7 +207,7 @@ export default function Simulation() {
           <div className="logo">Firewall Visualizer</div>
           <ul className="nav-links">
             <li>
-              <a href="/">Home</a>
+              <Link to="/">Home</Link>
             </li>
             <li>
               <a href="/">About</a>

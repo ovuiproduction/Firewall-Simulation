@@ -5,8 +5,10 @@ class rule_engine():
     def __init__(self):
         self.in_config = configparser.ConfigParser()
         self.out_config = configparser.ConfigParser()
-        self.in_config.read('src/inbound rules.ini')
-        self.out_config.read('src/outbound rules.ini')
+        # self.in_config.read('src/inbound rules.ini')
+        # self.out_config.read('src/outbound rules.ini')
+        self.in_config.read('src/inbound_rules.ini')
+        self.out_config.read('src/outbound_rules.ini')
  
     # function for checking inbound rules
     def checkInboundRules(self, ip_address, port):

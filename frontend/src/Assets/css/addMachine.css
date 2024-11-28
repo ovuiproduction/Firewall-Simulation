@@ -15,15 +15,16 @@
     background-size:100%;
 }
 .machine-details-main-block{
+    position: relative;
     width:50%;
     height: 100%;
     display: flex;
     align-items: center;
     flex-direction: column;
+    justify-content: center;
     background-color: white;
 }
 .machine-details-form{
-    margin-top:2vh;
     width:80%;
     height:auto;
     border:1px solid rgb(195, 223, 252);
@@ -31,9 +32,12 @@
     box-shadow:0px 0px 2px #b1ebef;
 }
 .backnavbar{
+    position:absolute;
+    top:0px;
     width:100%;
     height:8vh;
     border-bottom:1px solid rgb(222, 222, 222);
+    border-left: 1px solid rgb(222, 222, 222);
 }
 
 .backnavbar ul{
@@ -74,6 +78,7 @@
 }
 /* inputs css */
 .input-container{
+   
     display: flex;
     justify-content:space-between;
     flex-direction: column;
@@ -169,5 +174,90 @@
     top: 0px;
     width:100%;
     height:100%;
-    background-color: rgba(6, 3, 23, 0.5);
+    background-color: rgba(6, 3, 23, 0.2);
 }
+
+.alert-box{
+    position:absolute;
+    top:1rem;
+    padding:0.5rem;
+    right:1rem;
+    width:30%;
+    background-color:rgb(5, 207, 96);
+    box-shadow: 0px 0px 2px #333;
+    color:white;
+    font-size: 15px;
+    font-family:sans-serif;
+    font-weight: 500;
+    border-radius:2px;
+}
+
+.left-display-block{
+    display: block;
+    height:100%;
+    width: 50%;
+}
+
+.left-display-block h2{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    padding:0.88rem;
+    font-family: sans-serif;
+    background-color:white;
+    border-bottom: 1px solid rgb(222, 222, 222);
+}
+.config-main-block{
+    width: 100%;
+    height:90%;
+    padding-bottom:2rem;
+    overflow-y:scroll;
+}
+.config-block{
+    width:90%;
+    height:auto;
+    margin: auto;
+    margin-top:1rem;
+    margin-bottom:2rem;
+    overflow-y: scroll;
+}
+
+.config-block h3{
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    background-color:whitesmoke;
+    padding:0.5rem;
+    font-size:20px;
+    font-family: sans-serif;
+}
+
+.config-block table{
+    width:100%;
+    font-family: sans-serif;
+    border-collapse: collapse;
+}
+  
+.config-block table td, th {
+    border: 1px solid #dddddd;
+    text-align: left;
+    padding: 8px;
+  }
+  
+.config-block table  tr:nth-child(even) {
+    background-color: #f1efef;
+  }
+.input-sub-block1{
+    width:100%;
+    display: grid;
+    align-items:baseline;
+    justify-content: center;
+    grid-template-columns: 0.2fr 1fr 0.2fr 1fr;
+}
+  .radio-label{
+    font-size:18px;
+    font-weight: 500;
+    font-family: Arial, Helvetica, sans-serif;
+    margin-bottom:1rem;
+    text-align: left;
+  }

@@ -5,7 +5,7 @@ def getIpAddress(array):
         s = s + str(int(i, 16)) + '.'
     return s[:len(s)-1]
 
-# formating the port conveting to string
+# formating the port conveting to string 
 def getPort(s):
     i = s[0] + s[1]
     return str(int(i, 16))
