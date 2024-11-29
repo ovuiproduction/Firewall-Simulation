@@ -34,6 +34,32 @@ export default function Home() {
     navigate("/simulation");
   };
 
+  const convertToDecimal = (ip) => {
+    if (!ip) return "";
+    try {
+      const hexParts = ip.split("|");
+      const decimalParts = hexParts.map((part) => parseInt(part, 16));
+      return decimalParts.join(".");
+    } catch (error) {
+      console.error("Error converting MAC to decimal:", error);
+      return ip;
+    }
+  };
+  
+  const convertPortToDecimal = (port) => {
+    if (!port) return ""; // Handle empty or undefined PORT values
+    try {
+      // Remove any '|' characters
+      const cleanedHexPort = port.replace(/\|/g, "");
+      // Convert the cleaned hexadecimal string to a decimal number
+      return parseInt(cleanedHexPort, 16);
+    } catch (error) {
+      console.error("Error converting PORT to decimal:", error);
+      return port;
+    }
+  };
+  
+
   return (
     <>
       {/* Navbar */}
@@ -109,7 +135,7 @@ export default function Home() {
                               <strong>IP:</strong>
                             </td>
                             <td>
-                            {serverData.IP}
+                            {convertToDecimal(serverData.IP)}
                               </td>
                           </tr>
                           <tr className="details-table-row">
@@ -117,7 +143,7 @@ export default function Home() {
                               <strong>Port:</strong>
                             </td>
                             <td>
-                            {serverData.PORT}
+                            {convertPortToDecimal(serverData.PORT)}
                               </td>
                           </tr>
                         </tbody>
@@ -172,13 +198,13 @@ export default function Home() {
                             <td className="details-table-cell">
                               <strong>IP:</strong>
                             </td>
-                            <td>{machine.IP}</td>
+                            <td>{convertToDecimal(machine.IP)}</td>
                           </tr>
                           <tr className="details-table-row">
                             <td className="details-table-cell">
                               <strong>Port:</strong>
                             </td>
-                            <td>{machine.PORT}</td>
+                            <td>{convertPortToDecimal(machine.PORT)}</td>
                           </tr>
                         </tbody>
                       </table>

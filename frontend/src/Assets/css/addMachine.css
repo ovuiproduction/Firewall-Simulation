@@ -243,6 +243,10 @@
     text-align: left;
     padding: 8px;
   }
+
+  .config-block table td{
+    position: relative;
+  }
   
 .config-block table  tr:nth-child(even) {
     background-color: #f1efef;
@@ -260,4 +264,19 @@
     font-family: Arial, Helvetica, sans-serif;
     margin-bottom:1rem;
     text-align: left;
+  }
+
+  .remove-rule{
+    position:absolute;
+    width:20px;
+    right:2px;
+    cursor: pointer;
+    background-color:gainsboro;
+    border:0.5px solid rgb(203, 202, 202);
+    outline: none;
+  }
+
+  .remove-rule:hover{
+    background-color:rgb(205, 10, 10);
+    color: white;
   }

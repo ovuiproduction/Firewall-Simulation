@@ -39,7 +39,6 @@ class rule_engine():
             if(i == ip_address and (port in self.out_config['Declining ip'][i].split(","))):
                 return "Decline"
 
-
         for i in self.out_config['Rejecting ip']:
             if(i == ip_address and (port in self.out_config['Rejecting ip'][i].split(","))):
                 return "Reject"

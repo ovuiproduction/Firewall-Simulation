@@ -10,8 +10,8 @@ export default function Config() {
   const [Alert, setAlert] = useState(false);
   const [IP, setIP] = useState(new Array(4).fill(""));
   const [PORT, setPort] = useState("");
-  const [type, setType] = useState("");
-  const [status, setStatus] = useState("");
+  const [direction, setDirection] = useState("");
+  const [action, setAction] = useState("");
   const [inBoundRules, setInBoundRules] = useState({
     accepting: [],
     rejecting: [],
@@ -61,20 +61,45 @@ export default function Config() {
   }, []);
 
   const handleRoute = (data) => {
-    if (!type || !status) {
+    if (!direction || !action) {
       alert("Please select both Inbound/Outbound and Accept/Reject.");
       return;
     }
     axios
-      .post(`http://127.0.0.1:5000/config-firewall/${type}-${status}`, data)
+      .post(
+        `http://127.0.0.1:5000/config-firewall/${direction}-${action}`,
+        data
+      )
       .then((response) => {
         if (response.data === true) {
-          if (type === "inbound") fetchInboundRules();
-          if (type === "outbound") fetchOutboundRules();
+          if (direction === "inbound") fetchInboundRules();
+          if (direction === "outbound") fetchOutboundRules();
           setIP(new Array(4).fill(""));
           setPort("");
           setAlert(true);
           setTimeout(() => setAlert(false), 1500);
+        }
+      })
+      .catch((error) => {
+        console.error("Error: ", error);
+        alert("Failed to configure firewall. Please try again.");
+      });
+  };
+
+  const handleRouteDelete = (direction, action, data) => {
+    if (!direction || !action) {
+      alert("Please select both Inbound/Outbound and Accept/Reject.");
+      return;
+    }
+    axios
+      .post(
+        `http://127.0.0.1:5000/config-firewall/delete-rule/${direction}-${action}`,
+        data
+      )
+      .then((response) => {
+        if (response.data === true) {
+          if (direction === "inbound") fetchInboundRules();
+          if (direction === "outbound") fetchOutboundRules();
         }
       })
       .catch((error) => {
@@ -101,13 +126,22 @@ export default function Config() {
 
     // Format PORT to hexadecimal
     const portDec = parseInt(PORT, 10);
-    
+
     // Data to send
     const data = {
       IP: ip,
       PORT: portDec,
     };
     handleRoute(data);
+  };
+
+  const handleDelete = (direction, action, ip, port) => {
+    // Data to send
+    const data = {
+      IP: ip,
+      PORT: port,
+    };
+    handleRouteDelete(direction, action, data);
   };
 
   return (
@@ -140,11 +174,41 @@ export default function Config() {
                           {inBoundRules.accepting[index]
                             ? `${inBoundRules.accepting[index].ip} ,[ ${inBoundRules.accepting[index].ports} ]`
                             : ""}
+                          {inBoundRules.accepting[index] && (
+                            <button
+                              onClick={() =>
+                                handleDelete(
+                                  "inbound",
+                                  "accept",
+                                  inBoundRules.accepting[index].ip,
+                                  inBoundRules.accepting[index].ports
+                                )
+                              }
+                              className="remove-rule"
+                            >
+                              -
+                            </button>
+                          )}
                         </td>
                         <td>
                           {inBoundRules.rejecting[index]
                             ? `${inBoundRules.rejecting[index].ip}, [ ${inBoundRules.rejecting[index].ports} ]`
                             : ""}
+                          {inBoundRules.rejecting[index] && (
+                            <button
+                              onClick={() =>
+                                handleDelete(
+                                  "inbound",
+                                  "reject",
+                                  inBoundRules.rejecting[index].ip,
+                                  inBoundRules.rejecting[index].ports
+                                )
+                              }
+                              className="remove-rule"
+                            >
+                              -
+                            </button>
+                          )}
                         </td>
                       </tr>
                     )
@@ -178,11 +242,41 @@ export default function Config() {
                             {outBoundRules.accepting[index]
                               ? `${outBoundRules.accepting[index].ip}, [ ${outBoundRules.accepting[index].ports} ]`
                               : ""}
+                            {outBoundRules.accepting[index] && (
+                              <button
+                                onClick={() =>
+                                  handleDelete(
+                                    "outbound",
+                                    "accept",
+                                    outBoundRules.accepting[index].ip,
+                                    outBoundRules.accepting[index].ports
+                                  )
+                                }
+                                className="remove-rule"
+                              >
+                                -
+                              </button>
+                            )}
                           </td>
                           <td>
                             {outBoundRules.rejecting[index]
                               ? `${outBoundRules.rejecting[index].ip}, [ ${outBoundRules.rejecting[index].ports} ]`
                               : ""}
+                            {outBoundRules.rejecting[index] && (
+                              <button
+                                onClick={() =>
+                                  handleDelete(
+                                    "outbound",
+                                    "reject",
+                                    outBoundRules.rejecting[index].ip,
+                                    outBoundRules.rejecting[index].ports
+                                  )
+                                }
+                                className="remove-rule"
+                              >
+                                -
+                              </button>
+                            )}
                           </td>
                         </tr>
                       )
@@ -226,7 +320,7 @@ export default function Config() {
                     name="door"
                     id="inbound"
                     value="inbound"
-                    onChange={(e) => setType(e.target.value)}
+                    onChange={(e) => setDirection(e.target.value)}
                   />
                   <label className="radio-label" htmlFor="inbound">
                     Inbound
@@ -238,7 +332,7 @@ export default function Config() {
                     name="door"
                     id="outbound"
                     value="outbound"
-                    onChange={(e) => setType(e.target.value)}
+                    onChange={(e) => setDirection(e.target.value)}
                   />
                   <label className="radio-label" htmlFor="outbound">
                     Outbound
@@ -254,7 +348,7 @@ export default function Config() {
                     name="status"
                     id="accept"
                     value="accept"
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={(e) => setAction(e.target.value)}
                   />
                   <label className="radio-label" htmlFor="accept">
                     Accept
@@ -266,7 +360,7 @@ export default function Config() {
                     name="status"
                     id="reject"
                     value="reject"
-                    onChange={(e) => setStatus(e.target.value)}
+                    onChange={(e) => setAction(e.target.value)}
                   />
                   <label className="radio-label" htmlFor="reject">
                     Reject
