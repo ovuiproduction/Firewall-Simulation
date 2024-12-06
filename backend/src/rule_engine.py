@@ -1,12 +1,11 @@
 import configparser
-
+ 
 class rule_engine():
     # loading the data from .ini file
     def __init__(self):
         self.in_config = configparser.ConfigParser()
         self.out_config = configparser.ConfigParser()
-        # self.in_config.read('src/inbound rules.ini')
-        # self.out_config.read('src/outbound rules.ini')
+        
         self.in_config.read('src/inbound_rules.ini')
         self.out_config.read('src/outbound_rules.ini')
  

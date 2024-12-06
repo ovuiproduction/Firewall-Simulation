@@ -26,7 +26,7 @@ collection = mongo.db.machineInfo
 from config import addRule
 from config import deleteRule
 from config import fetchRules
-
+ 
 # functions
 def fetchMachineData(machineId):
     data = collection.find_one({'MachineId': machineId}, {'_id': 0})
@@ -46,7 +46,7 @@ def addEtherHeader(srcMAC,desMAC):
     
     result = src_mac_address + "|" + des_mac_address + "|" + ether_type + "|"
     return result
-    
+
 def addIPHeader(srcIP,desIP,protocol):
     result = ""
     
@@ -204,11 +204,6 @@ def applyFirewall():
     
     srcMachineData = fetchMachineData(srcMachineId)
     desMachineData = fetchMachineData(desMachineId)
-    # packet = ""
-    # ether_header = addEtherHeader(srcMachineData["MAC"],desMachineData["MAC"])
-    # ip_header = addIPHeader(srcMachineData["IP"],desMachineData["IP"],protocol)
-    # tcp_header = addTCPHeader(srcMachineData["PORT"],desMachineData["PORT"])
-    # packet = ether_header + ip_header + tcp_header
     packet = packetGeneration(srcMachineId,desMachineId,protocol)
    
     firewall_check_result = main(packet)  # could return "accepted" or "rejected"
