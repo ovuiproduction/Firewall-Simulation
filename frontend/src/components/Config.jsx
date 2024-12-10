@@ -9,6 +9,7 @@ import "../Assets/css/addMachine.css";
 export default function Config() {
   const [Alert, setAlert] = useState(false);
   const [IP, setIP] = useState(new Array(4).fill(""));
+  const [decimalIP, setDecimalIP] = useState("0.0.0.0");
   const [PORT, setPort] = useState("");
   const [direction, setDirection] = useState("");
   const [action, setAction] = useState("");
@@ -143,6 +144,22 @@ export default function Config() {
     };
     handleRouteDelete(direction, action, data);
   };
+
+  useEffect(() => {
+    const convertHexToDecimal = (hexArray) => {
+      return hexArray
+        .map((hex) => {
+          if (!hex || isNaN(parseInt(hex, 16))) {
+            return 0; 
+          }
+          return parseInt(hex, 16);
+        })
+        .join("."); 
+    };
+
+    const newDecimalIP = convertHexToDecimal(IP);
+    setDecimalIP(newDecimalIP);
+  }, [IP]);
 
   return (
     <>
@@ -373,6 +390,7 @@ export default function Config() {
                 <div className="input-sub-block">
                   <TwoDigitInput value={IP} onChange={setIP} numInputs={4} />
                 </div>
+                <p className="decimalIp">Decimal Representation : <span className="decimalIpvalue">{decimalIP}</span></p>
               </div>
               <hr className="input-line-separation" />
               <div className="input-block">

@@ -280,3 +280,13 @@
     background-color:rgb(205, 10, 10);
     color: white;
   }
+
+  .decimalIp{
+    margin-top:1rem;
+    color: gray;
+    font-size:16px;
+  }
+
+  .decimalIpvalue{
+    font-size:20px;
+  }
