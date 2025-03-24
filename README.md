@@ -1,7 +1,7 @@
 # Software Firewall Simulator
 
 ## 🚀 Live Demo
-[Click here to try the live demo](https://youtu.be/SQL4VmFA7DY)
+### [Demo](https://youtu.be/SQL4VmFA7DY)
 
 ## 📌 About the Project
 The **Software Firewall Simulator** is a web-based tool that allows users to manage and visualize inbound and outbound network traffic rules. It helps in understanding firewall operations, packet filtering, and rule-based traffic management.
