@@ -46,3 +46,6 @@ Make sure you have the following installed:
    npm start
    ```
 5. Open [http://localhost:3000](http://localhost:3000) in your browser.
+
+## License
+This project is licensed under the [MIT License](https://github.com/ovuiproduction/Firewall-Simulation/blob/main/LICENSE)
